@@ -165,6 +165,9 @@ def view_professors_ratings(request):
     VS1count = 0
     TT1total = 0
     TT1count = 0
+    JE1bool = False
+    VS1bool = False
+    TT1bool = False
     JE1rateString = ""
     VS1rateString = ""
     TT1rateString = ""
@@ -175,30 +178,38 @@ def view_professors_ratings(request):
                 if str(row.profID) == 'JE1':
                     JE1total += row.rating
                     JE1count += 1
+                    JE1bool =  True
                 if str(row.profID) == 'VS1':
                     VS1total += row.rating
                     VS1count += 1
+                    VS1bool = True
                 if str(row.profID) == 'TT1':
                     TT1total += row.rating
                     TT1count += 1
-            JE1rating = JE1total / JE1count
-            JE1decimalRating = Decimal(str(JE1rating)).quantize(Decimal('1.'), rounding=ROUND_UP)
-            JE1intRating = int(JE1decimalRating)
-            for x in range(JE1intRating):
-                JE1rateString += "*"
-            VS1rating = VS1total / VS1count
-            VS1decimalRating = Decimal(str(VS1rating)).quantize(Decimal('1.'), rounding=ROUND_UP)
-            VS1intRating = int(VS1decimalRating)
-            for x in range(VS1intRating):
-                VS1rateString += "*"
-            TT1rating = TT1total / TT1count
-            TT1decimalRating = Decimal(str(TT1rating)).quantize(Decimal('1.'), rounding=ROUND_UP)
-            TT1intRating = int(TT1decimalRating)
-            for x in range(TT1intRating):
-                TT1rateString += "*"
-            response += "The rating of Professor J. Excellent (JE1) is " + JE1rateString + "\n"
-            response += "The rating of Professor V. Smart (VS1) is " + VS1rateString + "\n"
-            response += "The rating of Professor T. Terrible (TT1) is " + TT1rateString + "\n"
+                    TT1bool = True
+            if JE1bool:
+                JE1rating = JE1total / JE1count
+                JE1decimalRating = Decimal(str(JE1rating)).quantize(Decimal('1.'), rounding=ROUND_UP)
+                JE1intRating = int(JE1decimalRating)
+                for x in range(JE1intRating):
+                    JE1rateString += "*"
+                response += "The rating of Professor J. Excellent (JE1) is " + JE1rateString + "\n"
+            if VS1bool:
+                VS1rating = VS1total / VS1count
+                VS1decimalRating = Decimal(str(VS1rating)).quantize(Decimal('1.'), rounding=ROUND_UP)
+                VS1intRating = int(VS1decimalRating)
+                for x in range(VS1intRating):
+                    VS1rateString += "*"
+                response += "The rating of Professor V. Smart (VS1) is " + VS1rateString + "\n"
+            if TT1bool:
+                TT1rating = TT1total / TT1count
+                TT1decimalRating = Decimal(str(TT1rating)).quantize(Decimal('1.'), rounding=ROUND_HALF_UP)
+                TT1intRating = int(TT1decimalRating)
+                for x in range(TT1intRating):
+                    TT1rateString += "*"
+                response += "The rating of Professor T. Terrible (TT1) is " + TT1rateString + "\n"
+
+
             return HttpResponse(response)
         return HttpResponse("error")
     return HttpResponse("error")
@@ -219,7 +230,7 @@ def get_ratings_for_professor(request):
                     count += 1
                     total += professor.rating
             profRating = total/count
-            decimalRating = Decimal(str(profRating)).quantize(Decimal('1.'), rounding=ROUND_UP)
+            decimalRating = Decimal(str(profRating)).quantize(Decimal('1.'), rounding=ROUND_HALF_UP)
             intRating = int(decimalRating)
             response = "The rating of "
             profTitle1 = ProfessorTitle.objects.filter(profID=prof_field)
@@ -237,6 +248,6 @@ def get_ratings_for_professor(request):
             response += " is "
             for x in range(intRating):
                 response += "*"
-            print(response)
+
             return HttpResponse(response)
     return HttpResponse('error')
