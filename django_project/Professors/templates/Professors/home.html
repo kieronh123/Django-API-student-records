@@ -1,0 +1,13 @@
+{% extends "Professors/base.html" %}
+{% block content %}
+    {% for post in posts %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ post.profID }}</a>
+              <small class="text-muted">{{ post.profFirstName }}</small>
+            </div>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %}
